@@ -1,6 +1,6 @@
 import TaskCard from "./TaskCard";
 
-const TaskList = ({ tasks, onDeleteTask }) => {
+const TaskList = ({ tasks, onDeleteTask, onEditTask }) => {
   if (tasks.length === 0) {
     return (
       <div className="text-center py-12">
@@ -41,7 +41,7 @@ const TaskList = ({ tasks, onDeleteTask }) => {
 
       <div className="grid gap-4">
         {tasks.map((task) => (
-          <TaskCard key={task._id} task={task} onDelete={onDeleteTask} />
+          <TaskCard key={task._id} task={task} onDelete={onDeleteTask} onEdit={onEditTask} />
         ))}
       </div>
     </div>

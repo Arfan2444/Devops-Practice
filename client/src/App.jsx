@@ -11,6 +11,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState(null);
 
   // Fetch tasks on component mount
   useEffect(() => {
@@ -56,8 +57,36 @@ function App() {
     }
   };
 
+  const handleUpdateTask = async (taskId, taskData) => {
+    try {
+      const response = await taskService.updateTask(taskId, taskData);
+      setTasks((prevTasks) =>
+        prevTasks.map((task) => (task._id === taskId ? response.data : task))
+      );
+      setEditingTask(null);
+      setIsDialogOpen(false);
+      return { success: true };
+    } catch (err) {
+      console.error('Error updating task:', err);
+      return {
+        success: false,
+        error: err.message || 'Failed to update task',
+      };
+    }
+  };
+
   const handleRetry = () => {
     fetchTasks();
+  };
+
+  const handleOpenCreateDialog = () => {
+    setEditingTask(null);
+    setIsDialogOpen(true);
+  };
+
+  const handleOpenEditDialog = (task) => {
+    setEditingTask(task);
+    setIsDialogOpen(true);
   };
 
   // let sangam = 'unused variable here';
@@ -73,7 +102,7 @@ function App() {
               <p className="text-gray-600 mt-1">Simple task management for DevOps demo</p>
             </div>
             <button
-              onClick={() => setIsDialogOpen(true)}
+              onClick={handleOpenCreateDialog}
               className="bg-black text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               Add Task
@@ -115,13 +144,29 @@ function App() {
             </div>
           </div>
         ) : (
-          <TaskList tasks={tasks} onDeleteTask={handleDeleteTask} />
+          <TaskList
+            tasks={tasks}
+            onDeleteTask={handleDeleteTask}
+            onEditTask={handleOpenEditDialog}
+          />
         )}
       </main>
 
       {/* Add Task Dialog */}
       {isDialogOpen && (
-        <AddTaskDialog onClose={() => setIsDialogOpen(false)} onSubmit={handleAddTask} />
+        <AddTaskDialog
+          onClose={() => {
+            setIsDialogOpen(false);
+            setEditingTask(null);
+          }}
+          onSubmit={
+            editingTask
+              ? (data) => handleUpdateTask(editingTask._id, data)
+              : handleAddTask
+          }
+          initialData={editingTask}
+          mode={editingTask ? 'edit' : 'create'}
+        />
       )}
     </div>
   );

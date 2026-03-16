@@ -59,6 +59,61 @@ const createTask = async (req, res) => {
   }
 };
 
+// Update a task
+const updateTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, description } = req.body;
+
+    if (!title || !description) {
+      return res.status(400).json({
+        success: false,
+        message: 'Title and description are required',
+      });
+    }
+
+    const task = await Task.findByIdAndUpdate(
+      id,
+      {
+        title: title.trim(),
+        description: description.trim(),
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: 'Task not found',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Task updated successfully',
+      data: task,
+    });
+  } catch (error) {
+    console.error('Error updating task:', error);
+
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map((err) => err.message);
+      return res.status(400).json({
+        success: false,
+        message: messages.join(', '),
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update task',
+    });
+  }
+};
+
 // Delete a task
 const deleteTask = async (req, res) => {
   try {
@@ -89,5 +144,6 @@ const deleteTask = async (req, res) => {
 module.exports = {
   getAllTasks,
   createTask,
+  updateTask,
   deleteTask,
 };

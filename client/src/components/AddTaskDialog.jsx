@@ -1,14 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const AddTaskDialog = ({ onClose, onSubmit }) => {
+const AddTaskDialog = ({ onClose, onSubmit, initialData, mode = 'create' }) => {
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
+    title: initialData?.title || '',
+    description: initialData?.description || '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        title: initialData.title || '',
+        description: initialData.description || '',
+      });
+    }
+  }, [initialData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -66,7 +75,9 @@ const AddTaskDialog = ({ onClose, onSubmit }) => {
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-xl font-semibold text-gray-900">Add New Task</h2>
+          <h2 className="text-xl font-semibold text-gray-900">
+            {mode === 'edit' ? 'Edit Task' : 'Add New Task'}
+          </h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
@@ -161,7 +172,7 @@ const AddTaskDialog = ({ onClose, onSubmit }) => {
                   Creating...
                 </>
               ) : (
-                'Create Task'
+                mode === 'edit' ? 'Save Changes' : 'Create Task'
               )}
             </button>
           </div>
