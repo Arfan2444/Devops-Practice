@@ -10,7 +10,7 @@ const AddTaskDialog = ({ onClose, onSubmit, initialData, mode = 'create' }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
-  const { unusedvar } = 123;
+  // const { unusedvar } = 123;
 
   useEffect(() => {
     if (initialData) {
