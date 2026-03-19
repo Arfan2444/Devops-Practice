@@ -10,6 +10,8 @@ const AddTaskDialog = ({ onClose, onSubmit, initialData, mode = 'create' }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
+  const { unusedvar } = 123;
+
   useEffect(() => {
     if (initialData) {
       setFormData({
@@ -171,8 +173,10 @@ const AddTaskDialog = ({ onClose, onSubmit, initialData, mode = 'create' }) => {
                   </svg>
                   Creating...
                 </>
+              ) : mode === 'edit' ? (
+                'Save Changes'
               ) : (
-                mode === 'edit' ? 'Save Changes' : 'Create Task'
+                'Create Task'
               )}
             </button>
           </div>
