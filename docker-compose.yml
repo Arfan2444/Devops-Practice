@@ -11,10 +11,12 @@ services:
       - "5000:5000"
 
   frontend:
-    build: ./client
+    build:
+      context: ./client
+      args:
+        VITE_API_URL: http://13.221.111.254:5000/api
     container_name: frontend
     restart: always
-    env_file: ./client/.env
     ports:
       - "5173:5173"
     depends_on:
