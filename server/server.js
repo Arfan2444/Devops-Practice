@@ -3,6 +3,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const taskRoutes = require('./routes/tasks');
+const dns = require('dns');
+
+dns.setServers(["1.1.1.1","8.8.8.8"]); // Set DNS servers to Cloudflare and Google
 
 // Load environment variables
 dotenv.config();
