@@ -62,7 +62,7 @@ const createTask = async (req, res) => {
 // Delete a task
 const deleteTask = async (req, res) => {
   try {
-    const {unusedvariable} = req.body; // This variable is not used, to check if linter and github actions are working correctly
+    // const {unusedvariable} = req.body; // This variable is not used, to check if linter and github actions are working correctly
     const { id } = req.params;
 
     const task = await Task.findByIdAndDelete(id);
