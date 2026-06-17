@@ -1,22 +1,49 @@
-# Two services: backend API on 5000, frontend (nginx) on 80
 services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    restart: always
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - mern-network
+    ports:
+      - "27017:27017"
+
   backend:
-    build: ./server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
     container_name: backend
     restart: always
     env_file:
-      - ./server/.env        
+      - ./server/.env
     ports:
       - "5000:5000"
+    depends_on:
+      - mongo
+    networks:
+      - mern-network
 
   frontend:
     build:
       context: ./client
+      dockerfile: Dockerfile
       args:
-        VITE_API_URL: http://16.192.29.178:5000/api
+        # VITE_API_URL: http://16.192.29.178:5000/api
+        VITE_API_URL: http://localhost:5000/api
     container_name: frontend
     restart: always
     ports:
       - "5173:5173"
     depends_on:
       - backend
+    networks:
+      - mern-network
+
+volumes:
+  mongo-data:
+
+networks:
+  mern-network:
+    driver: bridge
